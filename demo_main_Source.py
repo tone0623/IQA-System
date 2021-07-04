@@ -349,7 +349,7 @@ def test(args, mode='test'):
 if __name__ == '__main__':
 
 
-    Mode  = 'eval'
+    Mode  = 'test'
     ctx = get_extension_context('cudnn', device_id=0, type_config="half")
     nn.set_default_context(ctx)
     #   Train
