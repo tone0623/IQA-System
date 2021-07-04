@@ -264,10 +264,11 @@ def train(args):
     Feature_output2 = domain_transform_network(Input2, Mask2, scope=Name2) #(20, 96, 4, 4)
 
     with nn.parameter_scope(Name + '/cnn'):
-        nn.load_parameters(os.path.join(args.model_save_path, "network_cnn_80_params_{:04}.h5".format(args.epoch)))
+        nn.load_parameters(os.path.join(args.model_save_path, "network_cnn_80_param_{:04}.h5".format(args.epoch))) #SourceパラメータをSourceCNNに読み込み
+
 
     with nn.parameter_scope(Name2):
-        nn.load_parameters(os.path.join(args.model_save_path, "network_cnn_80_params_{:04}.h5".format(args.epoch)))
+        nn.load_parameters(os.path.join(args.model_save_path, "network_cnn_80_param_{:04}.h5".format(args.epoch))) #SourceパラメータをTargetCNNに読み込み
 
     Feature_output.apply(need_grad=False)
 
@@ -286,10 +287,10 @@ def train(args):
     solver.weight_decay(0.00001)  # Weight Decay for stable update
     solver2.weight_decay(0.00001)
 
-    with nn.parameter_scope(Name2):  # Get updating parameters included in scope
+    with nn.parameter_scope(Name2):  #TragetCNNパラメータを更新対象にセット
         solver.set_parameters(nn.get_parameters())
 
-    with nn.parameter_scope(Name_dis):  # Get updating parameters included in scope
+    with nn.parameter_scope(Name_dis):  #Discriminatorパラメータを更新対象にセット
         solver2.set_parameters(nn.get_parameters())
 
     #   Training Data Setting
@@ -312,8 +313,13 @@ def train(args):
         with nn.parameter_scope(Name):
             print('Retrain from {0} Epoch'.format(args.epoch))
             with nn.parameter_scope('cnn'):
-                nn.load_parameters(os.path.join(args.model_save_path, "network_cnn_80_params_{:04}.h5".format(args.epoch)))
+                nn.load_parameters(os.path.join(args.model_save_path, "network_cnn_80_param_{:04}.h5".format(args.epoch)))  #SourceパラメータをSourceCNNに読み込み
             solver.set_learning_rate(args.learning_rate_gen / np.sqrt(args.epoch))
+
+        with nn.parameter_scope(Name2):
+            nn.load_parameters(os.path.join(args.model_save_path, "network_cnn_80_param_{:04}.h5".format(args.epoch))) #SourceパラメータをTargetCNNに読み込み
+            solver.set_learning_rate(args.learning_rate_gen / np.sqrt(args.epoch))
+
 
     ##  Training
     for i in range(args.epoch, args.epoch_domain_adaptation):  # args.retrain → args.epoch まで繰り返し学習
@@ -365,9 +371,9 @@ def train(args):
         if ((i + 1) % args.model_save_cycle) == 0 or (i + 1) == args.epoch_domain_adaptation:
             bar.clear()
             with nn.parameter_scope(Name2):
-                nn.save_parameters(os.path.join(args.model_save_path, 'network_domain_adaptation_80_{:04}.h5'.format(i + 1)))
+                nn.save_parameters(os.path.join(args.model_save_path, 'network_domain_adaptation_80_{:04}.h5'.format(i + 1))) #TragetCNNパラメータを保存
             with nn.parameter_scope(Name_dis):
-                nn.save_parameters(os.path.join(args.model_save_path2, 'network_discriminator_80_{:04}.h5'.format(i + 1)))
+                nn.save_parameters(os.path.join(args.model_save_path2, 'network_discriminator_80_{:04}.h5'.format(i + 1))) #Discriminatorパラメータを保存
 
 
 
@@ -417,14 +423,14 @@ def test(args, mode='test'):
     #   Load data　保存した学習パラメータの読み込み
 
     with nn.parameter_scope(Name + '/cnn'):
-        nn.load_parameters(os.path.join(args.model_save_path, "network_cnn_80_params_{:04}.h5".format(args.epoch)))
+        nn.load_parameters(os.path.join(args.model_save_path, "network_cnn_80_param_{:04}.h5".format(args.epoch))) #SourceCNNパラメータをSourceCNNに読み込み
 
     with nn.parameter_scope(Name + '/fcn'):
-        nn.load_parameters(os.path.join(args.model_save_path2, "network_fcn_80_param_{:04}.h5".format(args.epoch)))
+        nn.load_parameters(os.path.join(args.model_save_path2, "network_fcn_80_param_{:04}.h5".format(args.epoch))) #SourceFCNパラメータをSourceFCNに読み込み
 
-    if mode != "test":
-        with nn.parameter_scope(Name2):
-            nn.load_parameters(os.path.join(args.model_save_path, "network_domain_adaptation_80_{:04}.h5".format(args.epoch_domain_adaptation)))
+    #if mode != "test":
+    with nn.parameter_scope(Name2):
+        nn.load_parameters(os.path.join(args.model_save_path, "network_domain_adaptation_80_{:04}.h5".format(args.epoch_domain_adaptation))) #TargetCNNパラメータをTargetFCNに読み込み
 
     # Test Data Setting
     #image_data, mos_data, image_files = dt.data_loader(test=True)
@@ -509,7 +515,7 @@ def test(args, mode='test'):
 if __name__ == '__main__':
 
 
-    Mode  = "train"
+    Mode  = "test"
     ctx = get_extension_context('cudnn', device_id=0, type_config="half")
     nn.set_default_context(ctx)
     #   Train
