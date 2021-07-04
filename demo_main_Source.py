@@ -158,8 +158,12 @@ def train(args):
     solver.weight_decay(0.00001)  # Weight Decay for stable update
     solver2.weight_decay(0.00001)
 
-    with nn.parameter_scope(Name):  # Get updating parameters included in scope
+    with nn.parameter_scope(Name + '/cnn'):  # Get updating parameters included in scope
         solver.set_parameters(nn.get_parameters())
+
+    with nn.parameter_scope(Name + '/fcn'):  # Get updating parameters included in scope
+        solver2.set_parameters(nn.get_parameters())
+
 
     #   Training Data Setting
     image_data, mask_data, mos_data, similarity, variance  = dt.data_loader(mask_out=True)
@@ -180,11 +184,11 @@ def train(args):
     if args.retrain > 0:  # 途中のエポック(retrain)から再学習
         print('Retrain from {0} Epoch'.format(args.retrain))
         with nn.parameter_scope(Name+'/cnn'):
-            nn.load_parameters(os.path.join(args.model_save_path, "network_cnn_80_param_{:04}.h5".format(args.retrain)))
+            nn.load_parameters(os.path.join(args.model_save_path, "network_cnn_80_params_{:04}.h5".format(args.retrain)))
             solver.set_learning_rate(args.learning_rate / np.sqrt(args.retrain))
 
         with nn.parameter_scope(Name + '/fcn'):
-            nn.load_parameters(os.path.join(args.model_save_path, "network_fcn_80_param_{:04}.h5".format(args.retrain)))
+            nn.load_parameters(os.path.join(args.model_save_path2, "network_fcn_80_param_{:04}.h5".format(args.retrain)))
             solver.set_learning_rate(args.learning_rate / np.sqrt(args.retrain))
 
     ##  Training
@@ -243,7 +247,7 @@ def train(args):
             #     solver.set_learning_rate(args.learning_rate / np.sqrt(args.retrain))
 
             with nn.parameter_scope(Name + '/cnn'):
-                nn.save_parameters(os.path.join(args.model_save_path, 'network_cnn_80_params_{:04}.h5'.format(i + 1)))
+                nn.save_parameters(os.path.join(args.model_save_path, 'network_cnn_80_param_{:04}.h5'.format(i + 1)))
             with nn.parameter_scope(Name + '/fcn'):
                 nn.save_parameters(os.path.join(args.model_save_path2, 'network_fcn_80_param_{:04}.h5'.format(i + 1)))
 
@@ -287,7 +291,7 @@ def test(args, mode='test'):
 
     #   Load data　保存した学習パラメータの読み込み
     with nn.parameter_scope(Name + '/cnn'):
-        nn.load_parameters(os.path.join(args.model_save_path, "network_cnn_80_params_{:04}.h5".format(args.epoch)))
+        nn.load_parameters(os.path.join(args.model_save_path, "network_cnn_80_param_{:04}.h5".format(args.epoch)))
 
     with nn.parameter_scope(Name + '/fcn'):
         nn.load_parameters(os.path.join(args.model_save_path2, "network_fcn_80_param_{:04}.h5".format(args.epoch)))
@@ -349,7 +353,7 @@ def test(args, mode='test'):
 if __name__ == '__main__':
 
 
-    Mode  = 'test'
+    Mode  = 'train'
     ctx = get_extension_context('cudnn', device_id=0, type_config="half")
     nn.set_default_context(ctx)
     #   Train
