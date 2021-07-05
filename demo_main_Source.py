@@ -259,7 +259,7 @@ def train(args):
 # -------------------------------------------
 def test(args, mode='test'):
     """
-    Training
+    Test
     """
     M = 64
     ##  ~~~~~~~~~~~~~~~~~~~
@@ -340,8 +340,9 @@ def test(args, mode='test'):
     print(" Speerman's Correlation Coefficient: {0:.5f}".format(SRCC))
     print(" Pearson's Linear Correlation Coefficient: {0:.5f}".format(PLCC))
     np.savetxt('result.csv', [np.array(truth).T, np.array(result).T], delimiter=',')
-    #os.remove("./pkl/test_eval.pkl")  # add
-    #os.remove("./pkl/test_image.pkl")  # add
+
+    # os.remove("./pkl/test_eval.pkl")  # add
+    # os.remove("./pkl/test_image.pkl")  # add
 
     x = truth
     y = result
@@ -353,7 +354,7 @@ def test(args, mode='test'):
 if __name__ == '__main__':
 
 
-    Mode  = 'train'
+    Mode  = 'eval'
     ctx = get_extension_context('cudnn', device_id=0, type_config="half")
     nn.set_default_context(ctx)
     #   Train
