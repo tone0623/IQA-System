@@ -67,17 +67,17 @@ def data_loader(mode='train', mask_out=False):
         pkl_target_mask = args.pkl_path + '/target_mask.pkl'
         mask_names = args.test_mask_path + '/*.' + "png"
         Number_of_images = args.test_data_num
-        target_image_names = args.target_data_path + '/*.' + "png"
-        target_mask_names = args.target_mask_path + '/*.' + "png"
+        target_image_names = args.target_data_path + '/*.' + "bmp"
+        target_mask_names = args.target_mask_path + '/*.' + "bmp"
     elif mode == 'eval':
-        image_names = args.eval_data_path + '/*.' + "png"
+        image_names = args.eval_data_path + '/*.' + "bmp"
         eval_names = args.eval_data_path + '/*.txt'
         pkl_image = args.pkl_path + '/eval_image.pkl'
         pkl_eval = args.pkl_path + '/eval_eval.pkl'
         pkl_mask = args.pkl_path + '/eval_mask.pkl'
         pkl_target_image = args.pkl_path + '/target_image.pkl'
         pkl_target_mask = args.pkl_path + '/target_mask.pkl'
-        mask_names = args.eval_mask_path + '/*.' + "png"
+        mask_names = args.eval_mask_path + '/*.' + "bmp"
         Number_of_images = args.eval_data_num
         target_image_names = args.target_data_path + '/*.' + "bmp"
         target_mask_names = args.target_mask_path + '/*.' + "bmp"
@@ -100,21 +100,6 @@ def data_loader(mode='train', mask_out=False):
     target_mask_data = []
     similarity  = []
 
-    for target_image_file in sorted(glob.glob(target_image_names), key=numericalSort):
-        mask = cv2.imread(target_image_file)
-        # mask_data.append(mask.transpose(2, 0, 1))
-        target_image_data.append(mask)
-
-    for target_mask_file in sorted(glob.glob(target_mask_names), key=numericalSort):
-        mask = cv2.imread(target_mask_file)
-        # mask_data.append(mask.transpose(2, 0, 1))
-        target_mask_data.append(mask)
-
-    with open(pkl_target_image, 'wb') as f:  # Create clean pkl file
-        joblib.dump(target_image_data, f, protocol=-1, compress=3)
-
-    with open(pkl_target_mask, 'wb') as f:  # Create clean pkl file
-        joblib.dump(target_mask_data, f, protocol=-1, compress=3)
 
 
 
