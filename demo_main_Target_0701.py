@@ -422,8 +422,8 @@ def test(args, mode='test'):
 
     #   Load data　保存した学習パラメータの読み込み
 
-    with nn.parameter_scope(Name + '/cnn'):
-        nn.load_parameters(os.path.join(args.model_save_path, "network_cnn_80_param_{:04}.h5".format(args.epoch))) #SourceCNNパラメータをSourceCNNに読み込み
+    # with nn.parameter_scope(Name + '/cnn'):
+    #     nn.load_parameters(os.path.join(args.model_save_path, "network_cnn_80_param_{:04}.h5".format(args.epoch))) #SourceCNNパラメータをSourceCNNに読み込み
 
     with nn.parameter_scope(Name + '/fcn'):
         nn.load_parameters(os.path.join(args.model_save_path2, "network_fcn_80_param_{:04}.h5".format(args.epoch))) #SourceFCNパラメータをSourceFCNに読み込み
@@ -515,7 +515,7 @@ def test(args, mode='test'):
 if __name__ == '__main__':
 
 
-    Mode  = "test"
+    Mode  =  "train"
     ctx = get_extension_context('cudnn', device_id=0, type_config="half")
     nn.set_default_context(ctx)
     #   Train
