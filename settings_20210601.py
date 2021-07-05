@@ -21,7 +21,7 @@ class settings:
         self.learning_rate_dis = 0.000008  # Learning Rate　　change 0.00002 -> 0.000002
 
         # Retrain
-        self.epoch_domain_adaptation = 500
+        self.epoch_domain_adaptation = 300
 
         # Save path
         self.model_save_path    = 'params'          # Network model path
@@ -34,19 +34,36 @@ class settings:
         self.train_mask_path    = './resize/exreference_80'
         self.train_data_num     = 4536
 
-        self.target_data_path   = './resize/Girl/256x256'
-        self.target_mask_path   = './resize/Girl/256x256_mask'
+        self.target_data_path   = './resize/paprica_256x256'
+        self.target_mask_path   = './resize/paprica_256x256_mask'
 
 
-        self.test_data_path = './resize/eximages_80'
-        self.test_mask_path = './resize/exreference_80'
-        self.test_data_num = 4536
+        # self.test_data_path = './resize/eximages_80'
+        # self.test_mask_path = './resize/exreference_80'
+        # self.test_data_num = 4536
+
+        self.test_data_path = './resize/eximages_20'
+        self.test_mask_path = './resize/exreference_20'
+        self.test_data_num = 1132
 
         self.eval_data_path = './resize/Girl/256x256'
         self.eval_mask_path = './resize/Girl/256x256_mask'
         self.eval_data_num = 30
 
+        # self.eval_data_path = './resize/eximages_80'
+        # self.eval_mask_path = './resize/exreference_80'
+        # self.eval_data_num = 4536
+
+        # self.eval_data_path = './resize/paprica_256x256'
+        # self.eval_mask_path = './resize/paprica_256x256'
+        # self.eval_data_num = 30
+
+
+        # self.eval_data_path = './resize/eximages_80'
+        # self.eval_mask_path = './resize/exreference_80'
+        # self.eval_data_num = 4536
+
 
         # Pkl files
-        self.pkl_path     = './pkl'             # Folder of pkl files for train
+        self.pkl_path     = './pkl_Target'             # Folder of pkl files for train
 
